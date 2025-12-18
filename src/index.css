@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+
+
+@keyframes triangle-spin {
+  0% {
+    stroke-dasharray: 45, 32.5;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 45, 32.5;
+    stroke-dashoffset: -232.6;
+  }
+}
+
+.animate-triangle-spin {
+  animation: triangle-spin 1.5s linear infinite;
+}
