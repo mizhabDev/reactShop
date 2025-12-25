@@ -1,86 +1,94 @@
-import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ChevronLeft } from "lucide-react"; // Optional: for the back icon
 
-// ProductModal.jsx
-// Single-file React component that renders a full-screen modal matching the provided design.
-// Tailwind CSS required in the project. Uses Picsum for random images by default.
+export default function ProductView() {
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-export default function ProductView({ product, open, onClose }) {
+  const [product, setProduct] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
- 
+  useEffect(() => {
+    fetch(`https://api.escuelajs.co/api/v1/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => setProduct(data));
+  }, [id]);
 
-  const [activeThumb, setActiveThumb] = useState(true);
+  if (!product) return <p className="p-10 text-white">Loading...</p>;
 
-  function formatPrice(n) {
-    return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
-  }
+  const images = product.images || [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* overlay */}
-      <div className="fixed inset-0 inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 font-sans">
+      {/* Main Card Container */}
+      <div className="bg-[#121212] w-full max-w-5xl rounded-[32px] p-8 md:p-12 relative shadow-2xl">
+        
+        {/* Back Button */}
+        <button 
+          onClick={() => navigate(-1)}
+          className="absolute top-8 right-8 flex items-center gap-1 text-zinc-400 border border-zinc-700 rounded-full px-4 py-1 hover:bg-zinc-800 transition-colors text-sm"
+        >
+          <ChevronLeft size={16} /> Back
+        </button>
 
-      {/* modal panel */}
-      <div className="relative z-10 w-[90%] max-w-6xl rounded-2xl bg-[#0f0f0f] border border-zinc-800 shadow-2xl p-8 flex gap-10">
-        {/* left thumbnails */}
-        <div className="flex flex-col gap-6 items-center w-24">
-          {product.images.map((src, i) => (
-            <button
-              key={i}
-              onClick={() => setActiveThumb(i)}
-              className={`w-16 h-16 rounded-lg overflow-hidden flex items-center justify-center transition-all duration-200 ${
-                i === activeThumb
-                  ? "ring-2 ring-violet-500 bg-zinc-800"
-                  : "bg-zinc-900/60"
-              }`}
-            >
-              <img src={src} alt={`thumb-${i}`} className="w-full h-full object-cover" />
-            </button>
-          ))}
-        </div>
+        <div className="flex flex-col md:flex-row gap-10 mt-8">
+          
+          {/* 1. Vertical Thumbnails Column */}
+          <div className="flex flex-row md:flex-col gap-4 order-2 md:order-1">
+            {images.map((img, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all ${
+                  index === activeIndex ? "border-violet-500 scale-105" : "border-transparent opacity-50"
+                }`}
+              >
+                <img src={img} alt="thumbnail" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
 
-        {/* center image */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-[520px] h-[520px] rounded-xl bg-[#e6e6e6] p-8 flex items-center justify-center">
+          {/* 2. Main Image Section (Light Gray Box) */}
+          <div className="flex-1 bg-[#d1d1d1] rounded-[32px] flex items-center justify-center p-8 order-1 md:order-2">
             <img
-              src={product.images[activeThumb]}
+              src={images[activeIndex]}
               alt={product.title}
-              className="max-w-full max-h-full object-contain rounded-lg"
+              className="max-h-[400px] w-full object-contain mix-blend-multiply" 
             />
           </div>
-        </div>
 
-        {/* right details */}
-        <div className="w-96 flex flex-col justify-between text-zinc-200">
-          <div>
-            <button
-              onClick={onClose}
-              className="mb-6 flex items-center gap-2 px-3 py-2 rounded-full bg-zinc-900/40 border border-zinc-800 text-sm"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-sm">Back</span>
-            </button>
-
-            <h2 className="text-4xl font-semibold leading-tight mb-3 text-white">{product.title}</h2>
-            <span className="inline-block text-sm px-3 py-1 rounded-full bg-zinc-900/40 border border-zinc-800 text-zinc-300">{product.category}</span>
-
-            <p className="mt-8 text-zinc-400">{product.description}</p>
-          </div>
-
-          <div className="mt-8 flex items-center justify-between">
-            <div>
-              <p className="text-sm text-zinc-400">Price</p>
-              <p className="text-3xl font-bold text-white mt-1">${formatPrice(product.price)}</p>
+          {/* 3. Product Details Section */}
+          <div className="flex-1 flex flex-col justify-center text-white order-3">
+            <h1 className="text-4xl font-semibold mb-3 lowercase">{product.title}</h1>
+            
+            {/* Category Tag */}
+            <div className="mb-8">
+              <span className="bg-zinc-800 text-zinc-300 text-[10px] uppercase tracking-widest px-3 py-1 rounded-full border border-zinc-700">
+                {product.category?.name || "Clothes"}
+              </span>
             </div>
 
-            <button className="px-5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 shadow-lg text-white font-medium">
-              Add To Cart
-            </button>
+            <p className="text-zinc-500 text-lg mb-10 leading-relaxed lowercase">
+              {product.description}
+            </p>
+
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-zinc-500 text-sm mb-1">Price</p>
+                <p className="text-3xl font-bold">
+                  $ {product.price?.toLocaleString()}
+                </p>
+              </div>
+
+              <button className="bg-[#6344fd] hover:bg-[#5235e5] text-white px-8 py-3 rounded-2xl font-medium transition-all transform active:scale-95 shadow-lg shadow-violet-900/20">
+                Add To Cart
+              </button>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
   );
 }
-

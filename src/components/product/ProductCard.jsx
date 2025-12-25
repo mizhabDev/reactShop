@@ -2,10 +2,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function ProductCard({ id,title, price, image, category, description}) {
   const navigate = useNavigate();
-   
   console.log(id)
+  console.log(title)
+
   return (
-    <div className="bg-zinc-900 p-4 rounded-2xl shadow cursor-pointer" onClick={() => navigate(`/products/${product.id}`)}>
+    <div className="bg-zinc-900 p-4 rounded-2xl shadow cursor-pointer" onClick={() => navigate(`/product/${id}`)}>
       <img
         src={image}
         alt={title}
@@ -25,3 +26,9 @@ export default function ProductCard({ id,title, price, image, category, descript
     </div>
   );
 }
+
+
+
+
+
+

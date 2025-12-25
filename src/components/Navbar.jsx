@@ -1,5 +1,7 @@
+
 import { FaGithub } from "react-icons/fa";
 import { FaUser, FaUserPlus } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
@@ -13,37 +15,41 @@ export default function Navbar() {
       }}
     >
       
-      <h1 className="text-4xl font-extrabold text-white tracking-wide">
-        React Shop
-      </h1>
+      <Link to="/">
+        <h1 className="text-4xl font-extrabold text-white tracking-wide cursor-pointer">
+          React Shop
+        </h1>
+      </Link>
 
       {/* Center Navigation */}
       <ul className="hidden md:flex gap-8 text-base font-medium">
-        <li className="px-7 py-3 rounded-full border border-zinc-700 text-gray-300 hover:text-white hover:border-violet-500 transition cursor-pointer">
+        <Link to="/home" className="px-7 py-3 rounded-full border border-zinc-700 text-gray-300 hover:text-white hover:border-violet-500 transition cursor-pointer">
           Home
-        </li>
-        <li className="px-7 py-3 rounded-full border border-zinc-700 text-gray-300 hover:text-white hover:border-violet-500 transition cursor-pointer">
+        </Link>
+
+        <Link to="/" className="px-7 py-3 rounded-full border border-zinc-700 text-gray-300 hover:text-white hover:border-violet-500 transition cursor-pointer">
           Products
-        </li>
-        <li className="px-7 py-3 rounded-full border border-zinc-700 text-gray-300 hover:text-white hover:border-violet-500 transition cursor-pointer">
+        </Link>
+
+        <Link to="/about" className="px-7 py-3 rounded-full border border-zinc-700 text-gray-300 hover:text-white hover:border-violet-500 transition cursor-pointer">
           About
-        </li>
+        </Link>
       </ul>
 
       {/* Right Side */}
       <div className="flex items-center gap-5">
 
         {/* Login */}
-        <button className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
+        <Link to="/login" className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
           <FaUser className="text-lg" />
           Login
-        </button>
+        </Link>
 
         {/* Sign Up */}
-        <button className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
+        <Link to="/signup" className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
           <FaUserPlus className="text-lg" />
           Sign Up
-        </button>
+        </Link>
 
         {/* GitHub Button */}
         <a

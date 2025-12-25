@@ -1,8 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./Components/Navbar";
-import Home from "./pages/Home";
+import Products from "./pages/Procucts";
 import ProductView from "./pages/ProductView";
+import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignupPage";
+import Home from "./pages/Home";
+import About from "./pages/About";
+
 
 export default function App() {
   return (
@@ -11,9 +16,16 @@ export default function App() {
         <Navbar />
 
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products/:id" element={<ProductView />} />
+          <Route path="/" element={<Products />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/product/:id" element={<ProductView />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
         </Routes>
+
+        
+
 
         <Footer />
       </div>
