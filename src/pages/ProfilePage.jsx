@@ -18,6 +18,8 @@ const Link = ({ to, children, className, onClick }) => (
 function ProfilePage({ navigate }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
 
   useEffect(()=>{
@@ -33,7 +35,8 @@ function ProfilePage({ navigate }) {
                 method : 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization':'Bearer ${token}'
+                    'Authorization': `Bearer ${token}`
+
                 }
             });
             if(!res.ok){
@@ -48,9 +51,12 @@ function ProfilePage({ navigate }) {
             setLoading(false);
             
         };
-        fetchUser();
+        
 
     }
+    
+    
+    fetchUser();
   },[]);
 
   const handleLogout = () => {

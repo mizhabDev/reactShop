@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react"; // Optional: for the back icon
+import TriangleLoader from "../components/TriangleLoader";
 
 export default function ProductView() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ export default function ProductView() {
       .then((data) => setProduct(data));
   }, [id]);
 
-  if (!product) return <p className="p-10 text-white">Loading...</p>;
+  if (!product) return <TriangleLoader />;
 
   const images = product.images || [];
 

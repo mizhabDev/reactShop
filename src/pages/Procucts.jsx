@@ -7,13 +7,20 @@ import SearchBar from "../components/SearchBar";
 
 export default function Procucts() {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
+    const [category, setCategory] = useState("all");
+
 
     useEffect(() => {
         async function loadProducts() {
             try {
-                
-                const res = await fetch("https://api.escuelajs.co/api/v1/products");
+                const url =
+                    category === "all"
+                        ? "https://api.escuelajs.co/api/v1/products"
+                        : `https://api.escuelajs.co/api/v1/products/?categorySlug=${category}`;
+
+
+                const res = await fetch(url);
                 const data = await res.json();
                 setProducts(data);
                 setLoading(false)
@@ -23,7 +30,7 @@ export default function Procucts() {
 
         }
         loadProducts();
-    }, []);
+    }, [category]);
 
     if (loading) return (
 
@@ -50,7 +57,9 @@ export default function Procucts() {
                     ))}
                 </div>
 
-                <Category />
+                <Category selected={category}
+                    onSelect={setCategory}
+                     />
             </div>
         </div>
 
