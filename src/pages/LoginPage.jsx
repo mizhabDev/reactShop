@@ -10,68 +10,52 @@ export default function LoginPage() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const res = await fetch(
-                "https://api.escuelajs.co/api/v1/auth/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email: formData.email,
-                        password: formData.password,
-                    }),
-                }
-            );
+            const res = await fetch("https://api.escuelajs.co/api/v1/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
 
-            if (!res.ok) {
-                // API returns 401 for wrong credentials
-                throw new Error("Invalid email or password");
-            }
-
+            if (!res.ok) throw new Error("Invalid email or password");
             const data = await res.json();
-
-            // Expected response:
-            // { access_token: "...", refresh_token: "..." }
-
-            console.log("Login success:", data);
-
-            // Store token (simple approach)
             localStorage.setItem("accessToken", data.access_token);
 
-            // Redirect after successful login
+
+            window.location.reload();
             navigate("/");
+
         } catch (error) {
             alert(error.message);
         }
     };
+
     return (
-        <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-4 font-sans">
-            {/* Main Card */}
-            <div className="bg-[#121212] w-full max-w-md rounded-[20px] p-8 md:p-10 shadow-2xl border border-zinc-800/50">
+        <div className="wrapper min-h-screen bg-[#0a0a0a] flex justify-center text-white font-sans p-8">
+            {/* Main Container - Using the exact classes from your inspector image */}
+            <div className="mt-[8%] w-full max-w-[850px] h-max bg-[#121212] border border-[#1e1e1e] rounded-lg p-10 md:p-16 shadow-2xl">
 
-                {/* Title */}
-                <h2 className="text-3xl font-bold text-center mb-10 text-violet-500">
-                    Login
-                </h2>
+                {/* Header Section */}
+                <div className="text-center mb-8">
+                    <h1 className="text-[#7c3aed] font-extrabold text-5xl mb-3 tracking-tight">
+                        Login
+                    </h1>
+                </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Email Field */}
-                    <div>
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-zinc-400 mb-2"
-                        >
+                {/* Form Section */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-y-8">
+
+                    {/* Email Group */}
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="email" className="text-sm font-semibold tracking-wide text-zinc-200">
                             Email Address
                         </label>
                         <input
@@ -81,16 +65,13 @@ export default function LoginPage() {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                            className="w-full bg-[#0a0a0a] border border-[#1e1e1e] rounded-md px-4 py-4 text-white focus:outline-none focus:border-[#7c3aed] transition-all duration-200"
                         />
                     </div>
 
-                    {/* Password Field */}
-                    <div>
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-zinc-400 mb-2"
-                        >
+                    {/* Password Group */}
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="password" className="text-sm font-semibold tracking-wide text-zinc-200">
                             Password
                         </label>
                         <input
@@ -100,25 +81,22 @@ export default function LoginPage() {
                             value={formData.password}
                             onChange={handleChange}
                             required
-                            className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+                            className="w-full bg-[#0a0a0a] border border-[#1e1e1e] rounded-md px-4 py-4 text-white focus:outline-none focus:border-[#7c3aed] transition-all duration-200"
                         />
                     </div>
 
-                    {/* Buttons Area */}
-                    <div className="mt-10 space-y-4">
-                        {/* Login Button */}
+                    {/* Buttons Group - Matching the stacked look in the photo */}
+                    <div className="flex flex-col gap-4 mt-4">
                         <button
                             type="submit"
-                            className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 transform active:scale-[0.98] shadow-lg shadow-violet-900/20"
+                            className="w-full bg-[#6d28d9] hover:bg-[#7c3aed] text-white font-bold py-4 rounded-lg transition-colors shadow-lg"
                         >
                             Login
                         </button>
 
-                        {/* Sign Up Link/Button */}
-                        {/* Using Link assuming you have a '/signup' route setup */}
                         <Link
                             to="/signup"
-                            className="block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold py-3.5 rounded-xl transition-all duration-200"
+                            className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white font-bold py-4 rounded-lg text-center transition-colors"
                         >
                             Sign Up
                         </Link>

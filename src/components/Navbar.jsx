@@ -1,9 +1,16 @@
-
 import { FaGithub } from "react-icons/fa";
 import { FaUser, FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+
+  const token = localStorage.getItem("accessToken");
+
+
   return (
     <nav
       className="flex items-center justify-between px-14 py-7 border-b border-zinc-800 
@@ -14,7 +21,7 @@ export default function Navbar() {
           "url('https://react-shop-siza.vercel.app/assets/AbstractDesign-5_Gpi5_9.svg')",
       }}
     >
-      
+
       <Link to="/">
         <h1 className="text-4xl font-extrabold text-white tracking-wide cursor-pointer">
           React Shop
@@ -39,17 +46,29 @@ export default function Navbar() {
       {/* Right Side */}
       <div className="flex items-center gap-5">
 
-        {/* Login */}
-        <Link to="/login" className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
-          <FaUser className="text-lg" />
-          Login
-        </Link>
+        {!token ? (
+          <>
+            {/* Login */}
+            <Link to="/login" className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
+              <FaUser className="text-lg" />
+              Login
+            </Link>
 
-        {/* Sign Up */}
-        <Link to="/signup" className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
-          <FaUserPlus className="text-lg" />
-          Sign Up
-        </Link>
+            {/* Sign Up */}
+            <Link to="/signup" className="flex items-center gap-2 px-6 py-3 rounded-full border border-zinc-700 text-base text-gray-300 hover:text-white hover:border-violet-500 transition">
+              <FaUserPlus className="text-lg" />
+              Sign Up
+            </Link>
+          </>
+        ) : (
+
+          <img
+           src="https://www.svgrepo.com/show/5125/avatar.svg"
+            alt="avatar"
+            className="w-14 h-14 rounded-full border"
+            onClick={() => navigate("/profile")}
+          />
+        )}
 
         {/* GitHub Button */}
         <a

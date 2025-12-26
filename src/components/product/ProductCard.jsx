@@ -15,7 +15,7 @@ export default function ProductCard({ id,title, price, image, category, descript
 
       <h3 className="font-semibold">{title}</h3>
       <p className="text-xs text-zinc-400 mb-3">{category}</p>
-      <p>{description}</p>
+      <p className="text-zinc-400 text-sm line-clamp-1">{description}</p>
 
       <div className="flex items-center justify-between">
         <span className="font-bold">$ {price}</span>

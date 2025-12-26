@@ -1,158 +1,161 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 
-export default function SignUpPage() {
-  const navigate = useNavigate();
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+
+
+// Using a mock navigation and Link for the preview environment
+const Link = ({ to, children, className, onClick }) => (
+  <a 
+    href="#" 
+    className={className} 
+    onClick={(e) => { e.preventDefault(); onClick && onClick(to); }}
+  >
+    {children}
+  </a>
+);
+
+function SignUpPage({ navigate }) {
+   navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    confirmPassword: ""
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Sign Up submitted:", formData);
-    // Add your registration logic here
-    const payload = {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      avatar: "https://api.lorem.space/image/face?w=640&h=480"
-    };
 
+    setLoading(true);
     try {
       const res = await fetch("https://api.escuelajs.co/api/v1/users/", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=" + formData.name
+        }),
       });
+
       if (!res.ok) {
-        const err = await res.json();
-        console.error("Signup failed:", err);
-        alert(err.message || "Signup failed");
-        return;
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to create account");
       }
 
-      const data = await res.json();
-      console.log("User created:", data);
-
+      alert("Account created successfully!");
       navigate("/login");
-
     } catch (error) {
-      console.error("Network error:", error);
-      alert("Something went wrong");
+      alert(error.message);
+    } finally {
+      setLoading(false);
     }
-
-
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-4 font-sans">
-      {/* Main Card */}
-      <div className="bg-[#121212] w-full max-w-md rounded-[24px] p-8 md:p-10 shadow-2xl border border-zinc-800/50">
+    <div className="min-h-screen bg-[#0a0a0a] flex justify-center text-white font-sans p-8 selection:bg-violet-500/30">
+      <div className="mt-[6%] w-full max-w-[850px] h-max bg-[#121212] border border-[#1e1e1e] rounded-lg p-10 md:p-16 shadow-2xl transition-all duration-300">
+        
+        <div className="text-center mb-10">
+          <h1 className="text-[#7c3aed] font-extrabold text-5xl md:text-6xl mb-4 tracking-tighter">
+            Create Account
+          </h1>
+        </div>
 
-        {/* Title */}
-        <h2 className="text-3xl font-bold text-center mb-8 text-violet-500">
-          Create Account
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Full Name Field */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1.5 ml-1">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-y-7">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="name" className="text-sm font-semibold tracking-wide text-zinc-300">
               Full Name
             </label>
             <input
+              id="name"
               name="name"
               type="text"
-              placeholder="John Doe"
+              placeholder="Your Name"
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+              className="w-full bg-[#0a0a0a] border border-[#1e1e1e] rounded-md px-4 py-4 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed] transition-all duration-200"
             />
           </div>
 
-          {/* Email Field */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1.5 ml-1">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="email" className="text-sm font-semibold tracking-wide text-zinc-300">
               Email Address
             </label>
             <input
+              id="email"
               name="email"
               type="email"
-              placeholder="email@example.com"
+              placeholder="example@email.com"
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
+              className="w-full bg-[#0a0a0a] border border-[#1e1e1e] rounded-md px-4 py-4 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed] transition-all duration-200"
             />
           </div>
 
-          {/* Password Field */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1.5 ml-1">
-              Password
-            </label>
-            <input
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password" className="text-sm font-semibold tracking-wide text-zinc-300">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full bg-[#0a0a0a] border border-[#1e1e1e] rounded-md px-4 py-4 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed] transition-all duration-200"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="confirmPassword" className="text-sm font-semibold tracking-wide text-zinc-300">
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="w-full bg-[#0a0a0a] border border-[#1e1e1e] rounded-md px-4 py-4 text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed] transition-all duration-200"
+              />
+            </div>
           </div>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-1.5 ml-1">
-              Confirm Password
-            </label>
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="••••••••"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all"
-            />
-          </div>
-
-          {/* Buttons Area */}
-          <div className="pt-4 space-y-4">
+          <div className="flex flex-col gap-4 mt-6">
             <button
               type="submit"
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3.5 rounded-xl transition-all duration-200 transform active:scale-[0.98] shadow-lg shadow-violet-900/20"
+              disabled={loading}
+              className="w-full bg-[#6d28d9] hover:bg-[#7c3aed] text-white font-bold py-4 rounded-lg transition-all duration-200 shadow-lg shadow-violet-900/10 active:scale-[0.99] disabled:opacity-50"
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </button>
-
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-zinc-800"></span></div>
-              <div className="relative flex justify-center text-xs uppercase"><span className="bg-[#121212] px-2 text-zinc-500">Already have an account?</span></div>
-            </div>
 
             <Link
               to="/login"
-              className="block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold py-3.5 rounded-xl transition-all duration-200"
+              onClick={navigate}
+              className="w-full bg-[#27272a] hover:bg-[#3f3f46] text-white font-bold py-4 rounded-lg text-center transition-all duration-200"
             >
               Login
             </Link>
@@ -162,3 +165,26 @@ export default function SignUpPage() {
     </div>
   );
 }
+
+const App = () => {
+  const [view, setView] = React.useState('signup');
+  const navigate = (path) => setView(path === '/login' ? 'login' : 'signup');
+
+  if (view === 'login') {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center text-white p-8">
+        <h1 className="text-3xl font-bold mb-4">Login Page</h1>
+        <button 
+          onClick={() => setView('signup')}
+          className="bg-zinc-800 px-6 py-2 rounded-lg hover:bg-zinc-700 transition-colors"
+        >
+          Back to Sign Up
+        </button>
+      </div>
+    );
+  }
+
+  return <SignUpPage navigate={navigate} />;
+};
+
+export default App;
