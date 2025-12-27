@@ -11,10 +11,15 @@ import ProfilePage from "./pages/ProfilePage";
 
 
 
+
+
+
 export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-zinc-950 text-white">
+
+        
         <Navbar />
 
         <Routes>
@@ -35,3 +40,6 @@ export default function App() {
     </BrowserRouter>
   );
 }
+
+
+

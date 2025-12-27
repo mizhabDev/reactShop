@@ -1,14 +1,25 @@
 import ProductCard from "../components/product/ProductCard";
 import Category from "../components/Category";
 import { useEffect, useState } from "react";
-import ProductSkeleton from "../components/TriangleLoader";
 import SearchBar from "../components/SearchBar";
+import TriangleLoader from "../components/TriangleLoader";
+import { useSearchParams } from "react-router-dom";
+
+
+
+
 
 
 export default function Procucts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [category, setCategory] = useState("all");
+    const [searchParams, setSearchParams] = useSearchParams();
+
+
+    const category = searchParams.get("category") || "all";
+    const search = searchParams.get("search") || "";
+
+
 
 
     useEffect(() => {
@@ -32,22 +43,43 @@ export default function Procucts() {
         loadProducts();
     }, [category]);
 
+    const filteredProducts = products.filter((item) =>
+        item.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+
     if (loading) return (
 
-        <ProductSkeleton />
+        <TriangleLoader />
     );
 
     return (
         <div className="p-10 space-y-10">
 
-            <SearchBar input />
+            <SearchBar
+                value={search}
+                onChange={(e) => {
+                    const value = e.target.value;
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 p-10">
-                <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-                    {products.map((item) => (
+                    const params = new URLSearchParams(searchParams);
+
+                    value
+                        ? params.set("search", value)
+                        : params.delete("search");
+
+                    setSearchParams(params);
+                }}
+            />
+
+
+            <div className="grid w-full grid-cols-1 lg:grid-cols-[minmax(0,1fr)_280px] gap-8 p-10">
+
+                {/* Products */}
+                <div className="grid w-full gap-8 sm:grid-cols-2 xl:grid-cols-3">
+                    {filteredProducts.map(item => (
                         <ProductCard
-                            id={item.id}
                             key={item.id}
+                            id={item.id}
                             title={item.title}
                             price={item.price}
                             category={item.category?.name}
@@ -57,9 +89,18 @@ export default function Procucts() {
                     ))}
                 </div>
 
-                <Category selected={category}
-                    onSelect={setCategory}
-                     />
+                <Category
+                    selected={category}
+                    onSelect={(value) => {
+                        const params = new URLSearchParams(searchParams);
+                        value === "all"
+                            ? params.delete("category")
+                            : params.set("category", value);
+
+                        setSearchParams(params);
+                    }}
+                />
+
             </div>
         </div>
 
